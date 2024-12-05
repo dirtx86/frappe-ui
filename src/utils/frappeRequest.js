@@ -11,12 +11,12 @@ export function frappeRequest(options) {
         {
           Accept: 'application/json',
           'Content-Type': 'application/json; charset=utf-8',
-          'X-Frappe-Site-Name': window.location.hostname,
+          'X-FusionNX-Site-Name': window.location.hostname,
         },
         options.headers || {},
       )
       if (window.csrf_token && window.csrf_token !== '{{ csrf_token }}') {
-        headers['X-Frappe-CSRF-Token'] = window.csrf_token
+        headers['X-FusionNX-CSRF-Token'] = window.csrf_token
       }
       if (!options.url.startsWith('/') && !options.url.startsWith('http')) {
         options.url = '/api/method/' + options.url
