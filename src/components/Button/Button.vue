@@ -1,80 +1,76 @@
 <template>
-  <button
-    v-bind="$attrs"
-    :class="buttonClasses"
-    @click="handleClick"
-    :disabled="isDisabled"
-    :ariaLabel="ariaLabel"
-  >
-    <LoadingIndicator
-      v-if="loading"
-      :class="{
-        'h-3 w-3': size == 'sm',
-        'h-[13.5px] w-[13.5px]': size == 'md',
-        'h-[15px] w-[15px]': size == 'lg',
-        'h-4.5 w-4.5': size == 'xl' || size == '2xl',
-      }"
-    />
-    <slot name="prefix" v-else-if="$slots['prefix'] || iconLeft">
-      <FeatherIcon
-        v-if="iconLeft && typeof iconLeft === 'string'"
-        :name="iconLeft"
-        :class="slotClasses"
-        aria-hidden="true"
+  <Tooltip :text="tooltip" :disabled="!tooltip?.length">
+    <button
+      v-bind="$attrs"
+      :class="buttonClasses"
+      @click="handleClick"
+      :disabled="isDisabled"
+      :ariaLabel="ariaLabel"
+      :type = "props.type"
+      ref="rootRef"
+    >
+      <LoadingIndicator
+        v-if="loading"
+        :class="{
+          'h-3 w-3': size == 'sm',
+          'h-[13.5px] w-[13.5px]': size == 'md',
+          'h-[15px] w-[15px]': size == 'lg',
+          'h-4.5 w-4.5': size == 'xl' || size == '2xl',
+        }"
       />
-      <component v-else-if="iconLeft" :is="iconLeft" :class="slotClasses" />
-    </slot>
+      <slot name="prefix" v-else-if="$slots['prefix'] || iconLeft">
+        <FeatherIcon
+          v-if="iconLeft && typeof iconLeft === 'string'"
+          :name="iconLeft"
+          :class="slotClasses"
+          aria-hidden="true"
+        />
+        <component v-else-if="iconLeft" :is="iconLeft" :class="slotClasses" />
+      </slot>
 
-    <template v-if="loading && loadingText">{{ loadingText }}</template>
-    <template v-else-if="isIconButton && !loading">
-      <FeatherIcon
-        v-if="icon && typeof icon === 'string'"
-        :name="icon"
-        :class="slotClasses"
-        :aria-label="label"
-      />
-      <component v-else-if="icon" :is="icon" :class="slotClasses" />
-      <slot name="icon" v-else-if="$slots.icon" />
-    </template>
-    <span v-else :class="{ 'sr-only': isIconButton }">
-      <slot>{{ label }}</slot>
-    </span>
+      <template v-if="loading && loadingText">{{ loadingText }}</template>
+      <template v-else-if="isIconButton && !loading">
+        <FeatherIcon
+          v-if="icon && typeof icon === 'string'"
+          :name="icon"
+          :class="slotClasses"
+          :aria-label="label"
+        />
+        <component v-else-if="icon" :is="icon" :class="slotClasses" />
+        <slot name="icon" v-else-if="$slots.icon" />
+        <div v-else-if="hasLucideIconInDefaultSlot" :class="slotClasses">
+          <slot>{{ label }}</slot>
+        </div>
+      </template>
+      <span v-else :class="{ 'sr-only': isIconButton }" class="truncate">
+        <slot>{{ label }}</slot>
+      </span>
 
-    <slot name="suffix">
-      <FeatherIcon
-        v-if="iconRight && typeof iconRight === 'string'"
-        :name="iconRight"
-        :class="slotClasses"
-        aria-hidden="true"
-      />
-      <component v-else-if="iconRight" :is="iconRight" :class="slotClasses" />
-    </slot>
-  </button>
+      <slot name="suffix">
+        <FeatherIcon
+          v-if="iconRight && typeof iconRight === 'string'"
+          :name="iconRight"
+          :class="slotClasses"
+          aria-hidden="true"
+        />
+          <component
+            v-else-if="iconRight"
+            :is="iconRight"
+            :class="slotClasses"
+          />
+      </slot>
+    </button>
+  </Tooltip>
 </template>
 <script lang="ts" setup>
-import { computed, useSlots, type Component } from 'vue'
+import { computed, useSlots, ref } from 'vue'
 import FeatherIcon from '../FeatherIcon.vue'
 import LoadingIndicator from '../LoadingIndicator.vue'
-import { useRouter, type RouteLocation } from 'vue-router'
+import { useRouter } from 'vue-router'
+import type { ButtonProps, ThemeVariant } from './types'
+import Tooltip from '../Tooltip/Tooltip.vue'
 
-type Theme = 'gray' | 'blue' | 'green' | 'red'
-type Size = 'sm' | 'md' | 'lg' | 'xl' | '2xl'
-type Variant = 'solid' | 'subtle' | 'outline' | 'ghost'
-
-export interface ButtonProps {
-  theme?: Theme
-  size?: Size
-  variant?: Variant
-  label?: string
-  icon?: string | Component
-  iconLeft?: string | Component
-  iconRight?: string | Component
-  loading?: boolean
-  loadingText?: string
-  disabled?: boolean
-  route?: RouteLocation
-  link?: string
-}
+defineOptions({ inheritAttrs: false })
 
 const props = withDefaults(defineProps<ButtonProps>(), {
   theme: 'gray',
@@ -82,6 +78,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   variant: 'subtle',
   loading: false,
   disabled: false,
+  type: "button"
 })
 
 const slots = useSlots()
@@ -134,7 +131,6 @@ const buttonClasses = computed(() => {
     ghost: ghostClasses,
   }[props.variant]
 
-  type ThemeVariant = `${Theme}-${Variant}`
   let themeVariant: ThemeVariant = `${props.theme}-${props.variant}`
 
   let disabledClassesMap: Record<ThemeVariant, string> = {
@@ -183,7 +179,7 @@ const buttonClasses = computed(() => {
   }
 
   return [
-    'inline-flex items-center justify-center gap-2 transition-colors focus:outline-none',
+    'inline-flex items-center justify-center gap-2 transition-colors focus:outline-none shrink-0',
     isDisabled.value ? disabledClasses : variantClasses,
     focusClasses,
     sizeClasses,
@@ -211,7 +207,24 @@ const ariaLabel = computed(() => {
 })
 
 const isIconButton = computed(() => {
-  return props.icon || slots.icon
+  return props.icon || slots.icon || hasLucideIconInDefaultSlot.value
+})
+
+const hasLucideIconInDefaultSlot = computed(() => {
+  if (!slots.default) return false
+
+  const slotContent = slots.default()
+  if (!Array.isArray(slotContent)) return false
+  // if the slot contains only one element and it's a lucide icon
+  // render it as an icon button
+  let firstVNode = slotContent[0]
+  if (
+    typeof firstVNode.type?.name == 'string' &&
+    firstVNode.type?.name?.startsWith('lucide-')
+  ) {
+    return true
+  }
+  return false
 })
 
 const handleClick = () => {
@@ -221,4 +234,7 @@ const handleClick = () => {
     return window.open(props.link, '_blank')
   }
 }
+
+const rootRef = ref()
+defineExpose({ rootRef })
 </script>

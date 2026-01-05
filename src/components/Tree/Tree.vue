@@ -68,22 +68,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import FeatherIcon from '../FeatherIcon.vue'
-import type { TreeNode, TreeOptions } from '../types/Tree'
+import type { TreeNode, TreeProps } from './types'
 
-const props = withDefaults(
-  defineProps<{
-    node: TreeNode
-    nodeKey: string
-    options?: TreeOptions
-  }>(),
-  {
-    options: () => ({
-      rowHeight: '25px',
-      indentWidth: '20px',
-      showIndentationGuides: true,
-    }),
-  },
-)
+const props = withDefaults(defineProps<TreeProps>(), {
+  options: () => ({
+    rowHeight: '25px',
+    indentWidth: '20px',
+    showIndentationGuides: true,
+    defaultCollapsed: true,
+  }),
+})
 
 const slots = defineSlots<{
   node: {
@@ -103,7 +97,7 @@ const slots = defineSlots<{
   }
 }>()
 
-const isCollapsed = ref(true)
+const isCollapsed = ref(props.options.defaultCollapsed ?? true)
 
 const linePadding = ref('')
 

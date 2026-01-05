@@ -7,7 +7,7 @@
     v-bind="options"
   >
     <Menu
-      class="rounded-md border border-gray-100 shadow-lg"
+      class="rounded-md border-gray-100 shadow-lg"
       :buttons="bubbleMenuButtons"
     />
   </BubbleMenu>
@@ -37,10 +37,17 @@ export default {
           'Separator',
           'Bold',
           'Italic',
+          'Strikethrough',
+          'FontColor',
           'Link',
           'Separator',
           'Bullet List',
           'Numbered List',
+          'Task List',
+          'Separator',
+          'Align Left',
+          'Align Center',
+          'Align Right',
           'Separator',
           'Image',
           'Video',

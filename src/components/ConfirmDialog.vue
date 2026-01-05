@@ -1,8 +1,12 @@
 <template>
-  <Dialog v-model="showDialog" :options="{ title }">
+  <Dialog v-model="showDialog" :options="{ title }" @close="closeDialog">
     <template #body-content>
       <div class="space-y-4">
-        <p class="text-p-base text-gray-800" v-if="message" v-html="message" />
+        <p
+          class="text-p-base text-ink-gray-6"
+          v-if="message"
+          v-html="message"
+        />
       </div>
     </template>
     <template #actions>
@@ -12,7 +16,7 @@
 </template>
 <script>
 import { Button } from './Button'
-import Dialog from './Dialog.vue'
+import { Dialog } from './Dialog'
 
 export default {
   name: 'ConfirmDialog',
@@ -24,6 +28,10 @@ export default {
       type: String,
     },
     onConfirm: {
+      type: Function,
+      default: null,
+    },
+    onCancel: {
       type: Function,
       default: null,
     },
@@ -51,6 +59,10 @@ export default {
     },
     show() {
       this.showDialog = true
+    },
+    closeDialog() {
+      this.hide()
+      this.onCancel?.()
     },
     hide() {
       this.showDialog = false

@@ -202,6 +202,32 @@ export const daysListFull = [
   'Friday',
   'Saturday',
 ]
+export const twelveHoursFormat = [
+  '12 am',
+  '1 am',
+  '2 am',
+  '3 am',
+  '4 am',
+  '5 am',
+  '6 am',
+  '7 am',
+  '8 am',
+  '9 am',
+  '10 am',
+  '11 am',
+  '12 pm',
+  '1 pm',
+  '2 pm',
+  '3 pm',
+  '4 pm',
+  '5 pm',
+  '6 pm',
+  '7 pm',
+  '8 pm',
+  '9 pm',
+  '10 pm',
+  '11 pm',
+]
 export const twentyFourHoursFormat = [
   '00:00',
   '01:00',
@@ -229,49 +255,251 @@ export const twentyFourHoursFormat = [
   '23:00',
 ]
 
+export function formattedDuration(fromTime, toTime, timeFormat) {
+  fromTime = formatTime(fromTime, timeFormat)
+  toTime = formatTime(toTime, timeFormat)
+
+  if (fromTime.split(' ')[1] === toTime.split(' ')[1]) {
+    fromTime = fromTime.split(' ')[0]
+  }
+
+  return fromTime + ' - ' + toTime
+}
+
+export function formatTime(time, format) {
+  if (format === '12h') {
+    let [hours, minutes] = time.split(':')
+    hours = parseInt(hours)
+    const ampm = hours >= 12 ? 'pm' : 'am'
+    hours = hours % 12
+    hours = hours ? hours : 12 // the hour '0' should be '12'
+
+    // if minutes is 00, remove it
+    if (minutes === '00') {
+      return `${hours} ${ampm}`
+    }
+    time = `${hours}:${minutes} ${ampm}`
+  }
+  return time
+}
+
 export const colorMap = {
-  blue: {
-    background_color: 'bg-blue-100',
-    border_color: 'border-blue-600',
-  },
-  green: {
-    background_color: 'bg-green-100',
-    border_color: 'border-green-600',
-  },
-  red: {
-    background_color: 'bg-red-200',
-    border_color: 'border-red-600',
-  },
-  orange: {
-    background_color: 'bg-orange-100',
-    border_color: 'border-orange-600',
-  },
-  yellow: {
-    background_color: 'bg-yellow-100',
-    border_color: 'border-yellow-600',
-  },
-  teal: {
-    background_color: 'bg-teal-100',
-    border_color: 'border-teal-600',
+  amber: {
+    color: '#DB7706',
+    border: '#DB7706',
+    borderActive: '#FBCC55',
+    text: '#91400D',
+    subtext: '#AD8460',
+    subtextActive: '#FAEBD0',
+    bg: '#FFF7D3',
+    bgHover: '#FEEDA9',
+    bgActive: '#E79913',
   },
   violet: {
-    background_color: 'bg-violet-100',
-    border_color: 'border-violet-600',
-  },
-  cyan: {
-    background_color: 'bg-cyan-100',
-    border_color: 'border-cyan-600',
-  },
-  purple: {
-    background_color: 'bg-purple-100',
-    border_color: 'border-purple-600',
+    color: '#6846E3',
+    border: '#6846E3',
+    borderActive: '#B3A1F5',
+    text: '#5F46C7',
+    subtext: '#766D9B',
+    subtextActive: '#E4DCFD',
+    bg: '#F0EBFF',
+    bgHover: '#DBD5FF',
+    bgActive: '#7A51F4',
   },
   pink: {
-    background_color: 'bg-pink-100',
-    border_color: 'border-pink-600',
+    color: '#E34AA6',
+    border: '#E34AA6',
+    borderActive: '#F6A7D6',
+    text: '#CF3A96',
+    subtext: '#B26997',
+    subtextActive: '#F9DBED',
+    bg: '#FDE8F5',
+    bgHover: '#FFD5F0',
+    bgActive: '#E34AA6',
   },
+  cyan: {
+    color: '#3BBDE5',
+    border: '#3BBDE5',
+    borderActive: '#72D5F3',
+    text: '#267A94',
+    subtext: '#668E9C',
+    subtextActive: '#D6EDF4',
+    bg: '#DDF7FF',
+    bgHover: '#B3E8F7',
+    bgActive: '#32A4C7',
+  },
+  blue: {
+    color: '#0289F7',
+    border: '#0289F7',
+    borderActive: '#A7D7FD',
+    text: '#007BE0',
+    subtext: '#5C8DB3',
+    subtextActive: '#CCE7FD',
+    bg: '#E6F4FF',
+    bgHover: '#C8E6FF',
+    bgActive: '#0289F7',
+  },
+  orange: {
+    color: '#E86C13',
+    border: '#E86C13',
+    borderActive: '#FFCBA3',
+    text: '#E86C13',
+    subtext: '#A67765',
+    subtextActive: '#FAE2D0',
+    bg: '#FFEFE4',
+    bgHover: '#FFDEC5',
+    bgActive: '#E86C13',
+  },
+  green: {
+    color: '#30A66D',
+    border: '#30A66D',
+    borderActive: '#88D5A5',
+    text: '#137949',
+    subtext: '#678877',
+    subtextActive: '#D6EDE2',
+    bg: '#E4FAEB',
+    bgHover: '#CBF3D7',
+    bgActive: '#30A66D',
+  },
+}
+
+export const colorMapDark = {
   amber: {
-    background_color: 'bg-amber-100',
-    border_color: 'border-amber-600',
+    color: '#DB7706',
+    border: '#C57411',
+    borderActive: '#C57411',
+    text: '#C57411',
+    textActive: '#824108',
+    subtext: '#988356',
+    subtextActive: '#8E6026',
+    bg: '#371E06',
+    bgHover: '#4B2606',
+    bgActive: '#F8D16E',
   },
+  violet: {
+    color: '#6846E3',
+    border: '#A384EC',
+    borderActive: '#8867E8',
+    text: '#A384EC',
+    textActive: '#4639A6',
+    subtext: '#9389AE',
+    subtextActive: '#332978',
+    bg: '#221C42',
+    bgHover: '#281E5D',
+    bgActive: '#C4AFEE',
+  },
+  pink: {
+    color: '#E34AA6',
+    border: '#CB4394',
+    borderActive: '#CB4394',
+    text: '#E359AB',
+    textActive: '#822A5F',
+    subtext: '#B07E99',
+    subtextActive: '#935277',
+    bg: '#471432',
+    bgHover: '#68204B',
+    bgActive: '#F6C5DE',
+  },
+  cyan: {
+    color: '#3BBDE5',
+    border: '#2B8DAB',
+    borderActive: '#2B8DAB',
+    text: '#3CB8DC',
+    textActive: '#155266',
+    subtext: '#819FA8',
+    subtextActive: '#3A6E7D',
+    bg: '#0B252D',
+    bgHover: '#0E3B49',
+    bgActive: '#A0E6F7',
+  },
+  blue: {
+    color: '#0289F7',
+    border: '#3294E3',
+    borderActive: '#1580D8',
+    text: '#5AAEF2',
+    textActive: '#155999',
+    subtext: '#7F95AC',
+    subtextActive: '#386A99',
+    bg: '#10243E',
+    bgHover: '#052B53',
+    bgActive: '#ADD2F5',
+  },
+  orange: {
+    color: '#E86C13',
+    border: '#C45A0E',
+    borderActive: '#C45A0E',
+    text: '#DE6D1B',
+    textActive: '#823906',
+    subtext: '#B3876B',
+    subtextActive: '#955528',
+    bg: '#401F07',
+    bgHover: '#532707',
+    bgActive: '#FFA873',
+  },
+  green: {
+    color: '#30A66D',
+    border: '#35AE74',
+    borderActive: '#35AE74',
+    text: '#58C08E',
+    textActive: '#0B6139',
+    subtext: '#7CA490',
+    subtextActive: '#0B6139',
+    bg: '#0B2E1C',
+    bgHover: '#0A3F27',
+    bgActive: '#9BE6C1',
+  },
+}
+
+// config.weekends can be array of numbers [0-6] (0=Sun) or weekday names (e.g., 'Saturday').
+// Falls back to [0] (Sunday) if not provided / invalid.
+const _weekdayNameToIndex = {
+  sunday: 0,
+  monday: 1,
+  tuesday: 2,
+  wednesday: 3,
+  thursday: 4,
+  friday: 5,
+  saturday: 6,
+}
+
+export function getWeekendDays(config) {
+  // Support both weekendDays (preferred) and weekends (legacy) keys
+  const raw = config?.weekendDays || config?.weekends
+  if (!raw || !Array.isArray(raw) || raw.length === 0) return [0]
+  return raw
+    .map((d) => {
+      if (typeof d === 'number') return d
+      if (typeof d === 'string') {
+        const key = d.trim().toLowerCase()
+        if (_weekdayNameToIndex.hasOwnProperty(key))
+          return _weekdayNameToIndex[key]
+      }
+      return null
+    })
+    .filter((v) => v !== null && v >= 0 && v <= 6)
+}
+
+export function isWeekend(date, config) {
+  const day = new Date(date).getDay()
+  const weekendDays = getWeekendDays(config)
+  return weekendDays.includes(day)
+}
+
+// Format single month & year (e.g., "August, 2025")
+export function formatMonthYear(month, year) {
+  return `${monthList[month]} ${year}`
+}
+
+// Extract ordered unique {month, year} pairs from a week of dates
+export function getWeekMonthParts(weekDates) {
+  const parts = []
+  for (const d of weekDates || []) {
+    const dt = new Date(d)
+    const m = dt.getMonth()
+    const y = dt.getFullYear()
+    const key = `${y}-${m}`
+    if (!parts.find((p) => p.key === key))
+      parts.push({ key, month: m, year: y })
+  }
+  return parts
 }

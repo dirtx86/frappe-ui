@@ -1,24 +1,25 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "strict": true,
-    "jsx": "preserve",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
-    "skipLibCheck": true,
-    "noEmit": true
-  },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "src/index.js"
+    "src/index.ts",
+    "frappe/**/*.ts",
+    "frappe/**/*.d.ts",
+    "frappe/**/*.tsx",
+    "frappe/**/*.vue",
+    "frappe/index.js",
+    "frappe/index.d.ts",
+    "vitest.config.ts",
+    "vitest.setup.ts"
   ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "extends": "./tsconfig.base.json",
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+  },
 }
